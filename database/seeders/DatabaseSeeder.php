@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Book;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,6 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call('UsersTableSeeder');
+        /**
+         * Retreive Collection Author IDs from diff db
+         */
+        $authorsId = DB::table('x1microservices_author_service.authors')->pluck('id');
+
+        Book::factory(100)->create([
+            'author_id' => function () use ($authorsId) {
+                return $authorsId->random();
+            },
+        ]);
     }
 }
