@@ -22,6 +22,7 @@ class Book extends Model
         'title',
         'description',
         'price',
+        'author_id'
     ];
 
     protected $hidden = [
