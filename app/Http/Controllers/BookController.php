@@ -33,7 +33,7 @@ class BookController extends Controller
 
         $this->validate($request, $rules);
 
-        $book = Book::create($request->validated());
+        $book = Book::create($request->only(array_keys($rules)));
 
         return $this->successResponse($book, Response::HTTP_CREATED);
     }
@@ -49,7 +49,7 @@ class BookController extends Controller
      * Update an existing book
      * @return Illuminate\Http\Response
      */
-    public function update(Request $request, $book)
+    public function update(Request $request, $bookId)
     {
         $rules = [
             'title' => 'string|max:255',
@@ -60,9 +60,9 @@ class BookController extends Controller
 
         $this->validate($request, $rules);
 
-        $book = Book::findOrFail($book);
+        $book = Book::findOrFail($bookId);
 
-        $book->fill($request->validated());
+        $book->fill($request->only(array_keys($rules)));
 
         if ($book->isClean()) {
             return $this->errorResponse(
@@ -80,12 +80,14 @@ class BookController extends Controller
      * Remove an existing book
      * @return Illuminate\Http\Response
      */
-    public function destroy($book)
+    public function destroy($bookId)
     {
-        $book = Book::findOrFail($book);
+        $book = Book::findOrFail($bookId);
 
         $book->delete();
 
-        return $this->successResponse($book);
+        return $this->successResponse([
+            'message' => 'Book deleted'
+        ]);
     }
 }
