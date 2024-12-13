@@ -17,11 +17,7 @@ class BookController extends Controller
         return $this->successResponse($books);
     }
 
-    /**
-     * Create one new book
-     * @return Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         // numeric value. // it can be an integer or a float
         $rules = [
@@ -45,11 +41,7 @@ class BookController extends Controller
         return $this->successResponse($book);
     }
 
-    /**
-     * Update an existing book
-     * @return Illuminate\Http\Response
-     */
-    public function update(Request $request, $bookId)
+    public function update(Request $request, $bookId): JsonResponse
     {
         $rules = [
             'title' => 'string|max:255',
@@ -76,18 +68,16 @@ class BookController extends Controller
         return $this->successResponse($book);
     }
 
-    /**
-     * Remove an existing book
-     * @return Illuminate\Http\Response
-     */
-    public function destroy($bookId)
+    public function destroy($bookId): JsonResponse
     {
         $book = Book::findOrFail($bookId);
 
-        $book->delete();
+        if ($book instanceof Book) {
+            $book->delete();
+        }
 
         return $this->successResponse([
             'message' => 'Book deleted'
-        ]);
+        ], Response::HTTP_NO_CONTENT);
     }
 }
